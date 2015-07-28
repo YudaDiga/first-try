@@ -1,8 +1,7 @@
 '''
 Created on 15-Jul-2015
 
-@author: Uday Adiga (Master YUDA)
-@todo: 1. Use Buttons to coordinate new windows 2. use database management and track user progress 3. use 
+@author: YudaDiga
 '''
 # importing everything
 import os.path
@@ -69,8 +68,6 @@ class Ball(pygame.sprite.Sprite):
         if self.rect.left <= SCREENRECT.left or self.rect.right >= SCREENRECT.right:
             self.speedx = -self.speedx
      
-
-#Giving a SuperClass Brick to assert identity , image load and for future pattern making usage right now we will be using random choice
 class Brick(pygame.sprite.Sprite):
     speed  = 0
     images = []
@@ -112,15 +109,7 @@ class Level(pygame.sprite.Sprite):
             self.lastscore = lvl
             msg = "Level : %d" % lvl
             self.image = self.font.render(msg, 0, self.color)
-"""class Message(pygame.sprite.Sprite):
-    def __init__(self,msg,color):
-        pygame.sprite.Sprite.__init__(self)
-        self.font = pygame.font.Font(None,60)
-        self.font.set_bold(1)
-        self.color = Color(color)
-        self.image = self.font.render(msg,0,self.color)
-        self.rect = self.image.get_rect(center = SCREENRECT.center)"""
-         
+ 
 def bricklayout(brick):
     fn = os.path.join(main_dir, 'BlocBreaker', 'data.enc')
     layout= open(fn,"r")
@@ -144,13 +133,10 @@ def main():
     #Initializing Pygame
     pygame.init()
     print pygame.font.get_fonts()
-    # Creating A screen also checking not a full screen
-    winstyle = 0  # |FULLSCREEN
+    winstyle = 0
     bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
     screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
-    
-    #Load images, assign to sprite classes
-    #(do this before the classes are used, after screen setup)
+
     img = load_image('Bar.gif')
     Player.images = [img, pygame.transform.flip(img, 1, 0)]
     Brick.images = load_images('LLB.png','MLB.png','HLB.png')
