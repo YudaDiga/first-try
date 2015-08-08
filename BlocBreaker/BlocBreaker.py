@@ -84,6 +84,7 @@ class Brick(pygame.sprite.Sprite):
     def __init__(self,i):
         if DEBUG == 1 :
             print ("Brick.__init__")
+        
         pygame.sprite.Sprite.__init__(self,self.containers)
         self.image = self.images[i]
         self.rect = self.image.get_rect()
@@ -126,7 +127,7 @@ class Level(pygame.sprite.Sprite):
             msg = "Level : %d" % lvl
             self.image = self.font.render(msg, 0, self.color)
 
-def bricklayout(brick):
+def bricklayout(brick,level):
     if DEBUG == 1 :
         print ("bricklayout")
     fn = os.path.join(main_dir, 'BlocBreaker', 'data.enc')
@@ -145,7 +146,7 @@ def bricklayout(brick):
         else:
             brick[x].rect.left += brick[x-1].rect.right
             brick[x].rect.bottom = brick[x-1].rect.bottom
-    
+    return lvlcap
 def main():
     
     #Initializing Pygame
@@ -201,8 +202,8 @@ def main():
     bar = Player()
     ball = Ball()
     brick = []
-    bricklayout(brick)
-    
+    lvlcap = bricklayout(brick,lvl)
+    no_of_bricks = len(brick);
     if pygame.font:
         all.add(Score())
         all.add(Level())
@@ -254,6 +255,7 @@ def main():
             if brick.health<=0:
                 SCORE+=brick.id
                 brick.kill()
+                no_of_bricks-=1
         if coll == True:
             ball.speedy *= -1
         
@@ -262,13 +264,18 @@ def main():
         pygame.display.update(dirty)
         coll = False
         
-        # if bricks.has(brick)  == False:
-            # if DEBUG == 1 :
-                # print("No bricks left")
-            # brick = []
-            # lvl += 1
-            # bricklayout(brick)
-            # pygame.time.delay(600)
+        if no_of_bricks == 0:
+            if DEBUG == 1 :
+                print("No bricks left")
+            brick = []
+            if lvlcap +1 > lvl :
+                lvl += 1
+                lvlcap = bricklayout(brick,lvl)
+                no_of_bricks = len(brick);
+            else :
+                print("You are Victorious!!")
+                return
+            pygame.time.delay(600)
             
         #cap the framerate
         clock.tick(60)        
