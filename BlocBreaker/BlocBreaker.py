@@ -13,7 +13,7 @@ from pygame.locals import *
 #from string import center
 
 # Global Variables going to be used
-DEBUG = 0
+DEBUG = 1
 SCREENRECT     = Rect(0, 0, 640, 480)
 SCORE          = 0
 main_dir = os.path.split(os.path.abspath(__file__))[0]
