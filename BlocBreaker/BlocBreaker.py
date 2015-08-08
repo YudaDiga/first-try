@@ -13,6 +13,7 @@ from pygame.locals import *
 #from string import center
 
 # Global Variables going to be used
+DEBUG = 0
 SCREENRECT     = Rect(0, 0, 640, 480)
 SCORE          = 0
 main_dir = os.path.split(os.path.abspath(__file__))[0]
@@ -39,6 +40,8 @@ class Player(pygame.sprite.Sprite):
     bounce = 24
     images = []
     def __init__(self):
+        if DEBUG == 1 :  
+            print ("Player.__init__")
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.image = self.images[0]
         self.rect = self.image.get_rect(midbottom=SCREENRECT.midbottom)
@@ -47,6 +50,8 @@ class Player(pygame.sprite.Sprite):
         self.facing = -1
 
     def move(self, direction):
+        if DEBUG == 1 :  
+            print ("Player.move")
         if direction: self.facing = direction
         self.rect.move_ip(direction*self.speed, 0)
         self.rect = self.rect.clamp(SCREENRECT)
@@ -57,11 +62,15 @@ class Ball(pygame.sprite.Sprite):
     speedy = 3
     images = []
     def __init__(self):
+        if DEBUG == 1 :
+            print ("Ball.__init__")
         pygame.sprite.Sprite.__init__(self,self.containers)
         self.image = self.images[0]
         self.rect = self.image.get_rect(center = SCREENRECT.center)
 
     def update(self):
+        if DEBUG == 1 :
+            print ("Ball.update")
         self.rect.move_ip(self.speedx,self.speedy)
         if self.rect.top <= 0: 
             self.speedy = -self.speedy
@@ -73,6 +82,8 @@ class Brick(pygame.sprite.Sprite):
     speed  = 0
     images = []
     def __init__(self,i):
+        if DEBUG == 1 :
+            print ("Brick.__init__")
         pygame.sprite.Sprite.__init__(self,self.containers)
         self.image = self.images[i]
         self.rect = self.image.get_rect()
@@ -90,6 +101,8 @@ class Score(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(10, 450)
 
     def update(self):
+        if DEBUG == 1 :
+            print ("Score.update")
         if SCORE != self.lastscore:
             self.lastscore = SCORE
             msg = "Score: %d" % SCORE
@@ -106,12 +119,16 @@ class Level(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(570, 450)
 
     def update(self):
+        if DEBUG == 1 :
+            print ("Level.update")
         if lvl != self.lastlevel:
             self.lastscore = lvl
             msg = "Level : %d" % lvl
             self.image = self.font.render(msg, 0, self.color)
 
 def bricklayout(brick):
+    if DEBUG == 1 :
+        print ("bricklayout")
     fn = os.path.join(main_dir, 'BlocBreaker', 'data.enc')
     layout= open(fn,"r")
     level=[]
@@ -159,10 +176,14 @@ def main():
     pygame.display.flip()
     
     # Initializing game groups
+    if DEBUG == 1 :
+        print ("# Initializing game groups")
     bricks = pygame.sprite.Group()
     all = pygame.sprite.RenderUpdates()
     rebound = pygame.sprite.Group()
     #assign default groups to each sprite class
+    if DEBUG == 1 :
+        print ("#assign default groups to each sprite class")
     Player.containers = rebound,all
     Ball.containers = all
     Brick.containers = bricks, all
@@ -187,6 +208,8 @@ def main():
         all.add(Level())
 
     while ball.alive():
+        if DEBUG == 1 :
+            print ("Enters Game Loop!!!")    
         #getting events
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -196,6 +219,8 @@ def main():
         all.clear(screen, background)
 
         #update all the sprites
+        if DEBUG == 1 :
+            print ("#update all the sprites")            
         all.update()
 
         #handle player input
@@ -203,11 +228,15 @@ def main():
         bar.move(direction)
         # if player misses the ball
         if ball.rect.bottom >= SCREENRECT.bottom:
+            if DEBUG == 1 :
+                print ("#update all the sprites")        
             ball.kill()
             pygame.time.delay(10)
         #Detect Collisions
         coll = False
         for bar in pygame.sprite.spritecollide(ball,rebound,0):
+            if DEBUG == 1 :
+                print ("Collision detected")            
             coll = True
         if coll == True:
             dist = ball.rect.midbottom[0] - bar.rect.midtop[0]
@@ -227,15 +256,19 @@ def main():
                 brick.kill()
         if coll == True:
             ball.speedy *= -1
-            coll = False
+        
         #draw the scene
         dirty = all.draw(screen)
         pygame.display.update(dirty)
-        if bricks.has(brick)  == False:
-            brick = []
-            lvl += 1
-            bricklayout(brick)
-            pygame.time.delay(600)
+        coll = False
+        
+        # if bricks.has(brick)  == False:
+            # if DEBUG == 1 :
+                # print("No bricks left")
+            # brick = []
+            # lvl += 1
+            # bricklayout(brick)
+            # pygame.time.delay(600)
             
         #cap the framerate
         clock.tick(60)        
