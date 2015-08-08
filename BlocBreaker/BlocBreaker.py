@@ -10,7 +10,7 @@ from math import tan,atan,trunc
 
 import pygame
 from pygame.locals import *
-from string import center
+#from string import center
 
 # Global Variables going to be used
 SCREENRECT     = Rect(0, 0, 640, 480)
@@ -133,7 +133,7 @@ def main():
     
     #Initializing Pygame
     pygame.init()
-    print pygame.font.get_fonts()
+#    print pygame.font.get_fonts()
 
     winstyle = 0  
     bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
