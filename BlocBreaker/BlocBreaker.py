@@ -10,7 +10,6 @@ from math import tan,atan,trunc
 
 import pygame
 from pygame.locals import *
-from string import center
 
 # Global Variables going to be used
 SCREENRECT     = Rect(0, 0, 640, 480)
@@ -67,7 +66,6 @@ class Ball(pygame.sprite.Sprite):
             self.speedy = -self.speedy
         if self.rect.left <= SCREENRECT.left or self.rect.right >= SCREENRECT.right:
             self.speedx = -self.speedx
-     
     
 class Brick(pygame.sprite.Sprite):
     speed  = 0
@@ -77,7 +75,7 @@ class Brick(pygame.sprite.Sprite):
         self.image = self.images[i]
         self.rect = self.image.get_rect()
         self.id = i
-        self.health = i
+        self.health = i+1
         
 class Score(pygame.sprite.Sprite):
     def __init__(self):
@@ -231,7 +229,7 @@ def main():
         #draw the scene
         dirty = all.draw(screen)
         pygame.display.update(dirty)
-        if bricks.has(brick)  == False:
+        if bricks.has(bricks)  == False:
             brick = []
             lvl += 1
             bricklayout(brick)
