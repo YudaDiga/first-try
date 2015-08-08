@@ -13,9 +13,11 @@ from pygame.locals import *
 #from string import center
 
 # Global Variables going to be used
-DEBUG = 1
+DEBUG = 0
 SCREENRECT     = Rect(0, 0, 640, 480)
 SCORE          = 0
+std_brick_width = 71
+std_brick_height = 29
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 def load_image(fn):
@@ -84,12 +86,14 @@ class Brick(pygame.sprite.Sprite):
     def __init__(self,i):
         if DEBUG == 1 :
             print ("Brick.__init__")
-        
-        pygame.sprite.Sprite.__init__(self,self.containers)
-        self.image = self.images[i]
-        self.rect = self.image.get_rect()
         self.id = i
         self.health = i
+        if i == 0 :
+            self.rect = pygame.Rect(0,0, std_brick_width,std_brick_height)
+        else :
+            pygame.sprite.Sprite.__init__(self,self.containers)
+            self.image = self.images[i]
+            self.rect = self.image.get_rect()
         
 class Score(pygame.sprite.Sprite):
     def __init__(self):
@@ -139,7 +143,7 @@ def bricklayout(brick,level):
     lvlcap = lino
     for l in level:
         brick.append(Brick(int(l)))
-    for x in range(1,len(brick)):
+    for x in range(1,len(brick)):   
         if x % 9 == 0:
             brick[x].rect.top+=brick[x-9].rect.bottom
             brick[x].rect.left = brick[x-9].rect.left
@@ -151,7 +155,7 @@ def main():
     
     #Initializing Pygame
     pygame.init()
-#    print pygame.font.get_fonts()
+    print (pygame.font.get_fonts())
 
     winstyle = 0  
     bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
@@ -203,7 +207,11 @@ def main():
     ball = Ball()
     brick = []
     lvlcap = bricklayout(brick,lvl)
-    no_of_bricks = len(brick);
+    no_of_bricks =0
+    for x in range(0,len(brick)):
+        if brick[x].id != 0 :
+            no_of_bricks +=1
+    print (no_of_bricks)
     if pygame.font:
         all.add(Score())
         all.add(Level())
@@ -271,7 +279,13 @@ def main():
             if lvlcap +1 > lvl :
                 lvl += 1
                 lvlcap = bricklayout(brick,lvl)
-                no_of_bricks = len(brick);
+                no_of_bricks = 0
+                for x in range(0,len(brick)):
+                    if brick[x].id != 0 :
+                        no_of_bricks +=1
+                       
+                ball.kill()
+                ball = Ball()
             else :
                 print("You are Victorious!!")
                 return
